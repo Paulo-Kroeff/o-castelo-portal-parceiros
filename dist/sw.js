@@ -1,4 +1,4 @@
-const CACHE='castelo-partner-v2';
+const CACHE='castelo-partner-v3';
 const CORE=['./','./index.html','./styles.css','./app.js','./guide.js','./assets/guia/pagina-01.jpg','./data.js','./manifest.webmanifest','./assets/icon-192.png','./assets/icon-512.png','./assets/12Fw7rfB6u47WnVpw5K6mamMKQyNY7wfW.svg','./assets/1aiUPLwiyj7JUAOPa75_Ss3-GwQ7Ib0LN.webp'];
 self.addEventListener('install',event=>{event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(CORE)).then(()=>self.skipWaiting()))});
 self.addEventListener('activate',event=>{event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(key=>key.startsWith('castelo-partner-')&&key!==CACHE).map(key=>caches.delete(key)))).then(()=>self.clients.claim()))});
