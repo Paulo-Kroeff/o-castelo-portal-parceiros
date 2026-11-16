@@ -68,3 +68,175 @@ dialog.guide-view{max-width:1280px;width:calc(100% - 32px);max-height:96vh}
 .guide-stage:focus-visible{outline:2px solid #b0843f;outline-offset:3px}
 .guide-reader #guide-status{margin:10px 0 0;min-height:20px}
 @media(max-width:760px){dialog.guide-view{width:calc(100% - 16px)}.guide-toolbar{gap:12px}.guide-navigation{width:100%;gap:6px;justify-content:space-between}.guide-navigation .button{padding:10px 8px;font-size:11px}.guide-select select{font-size:11px;padding:10px 6px}.guide-toolbar>[data-guide=zoom]{margin-top:3px}.guide-view .dialog-top h2{font-size:18px}.guide-stage{min-height:150px}.guide-stage img{min-height:150px}.guide-stage.is-zoomed img{min-height:0}}
+
+/* Identidade visual inspirada no site oficial de O Castelo.
+   Camada exclusivamente estética: azul profundo, marfim, ouro e Cinzel. */
+@font-face{font-family:Barlow;src:url('assets/fonts/barlow-400.woff2') format('woff2');font-style:normal;font-weight:400;font-display:swap}
+@font-face{font-family:Barlow;src:url('assets/fonts/barlow-500.woff2') format('woff2');font-style:normal;font-weight:500;font-display:swap}
+@font-face{font-family:Barlow;src:url('assets/fonts/barlow-600.woff2') format('woff2');font-style:normal;font-weight:600;font-display:swap}
+@font-face{font-family:Barlow;src:url('assets/fonts/barlow-700.woff2') format('woff2');font-style:normal;font-weight:700;font-display:swap}
+@font-face{font-family:Cinzel;src:url('assets/fonts/cinzel-variable.woff2') format('woff2');font-style:normal;font-weight:400 700;font-display:swap}
+:root{
+ --navy:#0b1f3b;--deep:#04132b;--gold:#e3bf76;--paper:#faf6ec;
+ --ink:#152942;--muted:#5b6877;--line:#d9cdb5;--radius:0;
+ --gold-line:#bd8d4c;--gold-ink:#806032;--ivory:#fff5da;
+}
+body{font-family:Barlow,Arial,Helvetica,sans-serif;font-size:17px;line-height:1.7}
+h1,h2,h3{font-family:Cinzel,Georgia,'Times New Roman',serif;font-weight:500;line-height:1.2;letter-spacing:-.025em}
+h1{font-size:clamp(36px,4.5vw,64px)}
+h2{font-size:clamp(30px,3.15vw,42px)}
+h3{font-size:24px}
+.review-bar{background:var(--deep);color:#d5c5a4;border-bottom:1px solid #e3bf7629}
+.header{background:var(--navy);border-bottom:1px solid #ebd18f45}
+.brand span{color:#ebd18f;letter-spacing:3px}
+.header nav a{font-size:14px;font-weight:500;letter-spacing:.2px}
+.header nav a[aria-current=page]{background:#e3bf7614;color:var(--ivory)}
+.header nav a[aria-current=page]:after{height:1px;background:var(--gold)}
+.header nav a:is(:hover,:focus-visible){background:#e3bf7626;color:var(--ivory)}
+.header-cta{border-color:var(--gold-line);color:var(--ivory);font-size:13px;font-weight:500}
+.hero:after{background:linear-gradient(90deg,#0b1f3b 6%,#0b1f3bf7 28%,#0b1f3b6b 64%,#0b1f3b08),linear-gradient(0deg,#04132b6b,transparent 52%)}
+.hero h1{font-size:clamp(42px,4.6vw,64px);max-width:700px;line-height:1.15;letter-spacing:-1px;font-weight:600;color:var(--ivory)}
+.hero h1 em{font-style:normal;font-weight:500;color:#ebd18f}
+.hero p{color:#e1e4e9;font-size:17px;line-height:1.75}
+.hero .eyebrow:before{content:'';display:inline-block;width:30px;height:1px;margin:0 12px 3px 0;background:var(--gold)}
+.hero-note{color:#d1d8e2;font-size:12px}
+.hero-caption{color:var(--ivory)}
+.eyebrow,.tag{color:var(--gold-ink)}
+.hero .eyebrow,.page-head .eyebrow,.section.dark .eyebrow,footer .eyebrow{color:#ebd18f}
+.section-head .eyebrow:after{content:'';display:block;width:72px;height:1px;margin-top:13px;background:linear-gradient(90deg,var(--gold-line),#bd8d4c18)}
+.button{font-size:14px;font-weight:600;letter-spacing:.1px}
+.button.small{font-size:13px}
+.button:not(.outline):not(.light){background:linear-gradient(125deg,#efd69c,#e3bf76 58%,#d5ac62);color:var(--deep);border-color:var(--gold-line);outline-color:var(--gold-line);box-shadow:inset 0 1px 0 #fff5da80,0 4px 12px #04132b14}
+.button:not(.outline):not(.light):is(:hover,:focus-visible){background:linear-gradient(125deg,#fff0c8,#ebce90 65%,#e3bf76);box-shadow:inset 0 1px 0 #fff5da,0 5px 16px #04132b26}
+.button.outline{background:#fffdf740;color:var(--navy);border-color:#b9aa8b}
+.button.outline:is(:hover,:focus-visible){background:var(--navy);color:var(--ivory);border-color:var(--gold-line)}
+.button.light{background:#0b1f3b33;color:var(--ivory);border-color:#e3bf7699}
+.button.light:is(:hover,:focus-visible){background:var(--gold);color:var(--deep);border-color:var(--gold-line)}
+.button.outline:is(:hover,:focus-visible),.button.light:is(:hover,:focus-visible){outline-color:var(--gold-line)}
+.crumb{border-color:var(--gold-line);outline-color:var(--gold-line);color:var(--ivory);background:#ffffff05}
+.header-cta{outline-color:var(--gold-line)}
+.crumb:is(:hover,:focus-visible),.header-cta:is(:hover,:focus-visible),.menu-button:is(:hover,:focus-visible){background:#ebd18f;color:var(--deep);border-color:var(--gold-line)}
+.quickbar{background:#eee5d1;border-top:1px solid #bd8d4c66;border-bottom:1px solid #d2be98}
+.quickbar p{font-family:Cinzel,Georgia,serif;font-size:17px;font-weight:500;line-height:1.45}
+.quickbar a{font-size:13px;font-weight:500}
+.section.white{background:#fffdf8;border-block:1px solid #d9cdb559}
+.section.dark{background:linear-gradient(120deg,#0b1f3b,#04132b);color:var(--ivory);border-block:1px solid #e3bf7638}
+.section-head p{font-size:15px}
+.journeys{border-color:#cbb58e}
+.journey{border-color:#d9cdb5}
+.journey .number{width:38px;height:46px;display:grid;place-items:center;padding-bottom:4px;font-weight:600;color:var(--gold-ink);margin-bottom:22px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 38 46'%3E%3Cpath d='M19 2L35 8V22C35 32 28 39 19 44C10 39 3 32 3 22V8Z' fill='%23e3bf76' fill-opacity='.12' stroke='%23b98b48' stroke-width='1'/%3E%3C/svg%3E") center/contain no-repeat}
+.journey h3{font-size:22px;line-height:1.28}
+.journey p{font-size:13px}
+.journey .arrow{color:#98713a}
+.journey:is(:hover,:focus-visible){background:linear-gradient(180deg,#e3bf761a,transparent);color:var(--navy)}
+.split-image{border:1px solid #bd8d4c99;outline:1px solid #cbb58e;outline-offset:6px;box-shadow:0 16px 35px #04132b12}
+.text-link{font-weight:500;border-color:#ad9160}
+.text-link:is(:hover,:focus-visible),.quickbar a:is(:hover,:focus-visible){color:#79551e;border-color:var(--gold-line);background:#e3bf761a}
+.material,.proposal-card{border-color:#d4c3a3;background:#fffdf8;border-radius:0;box-shadow:0 6px 18px #04132b06}
+.material{transition:border-color .2s,box-shadow .2s}
+.material:hover{border-color:#b98b48;box-shadow:0 10px 28px #04132b12}
+.material-media,.material-media.promo img,.material-media.document-preview img{background:#e9e1d1}
+.material-media.logo img,#viewer-content>img.brand-preview{background:var(--navy)}
+.material-body{padding:23px}
+.material h3{font-size:20px;line-height:1.3;letter-spacing:-.02em}
+.material .meta{font-size:12px;color:var(--muted)}
+.material-media .file-symbol{font-family:Cinzel,Georgia,serif;color:var(--gold-ink)}
+.material-media .play{background:var(--ivory);color:var(--navy);border:1px solid var(--gold-line)}
+.save[aria-pressed=true]{color:#926524}
+.save:is(:hover,:focus-visible),.icon-button:is(:hover,:focus-visible){background:#ebd18f;color:var(--deep);border-color:var(--gold-line)}
+.video-feature{background:var(--deep);border:1px solid #bd8d4c88}
+.video-feature .big-play{border-color:#ebd18f;color:#fff5da;background:#0b1f3b66}
+.video-feature h3{color:var(--ivory);font-size:34px}
+.page-head{background:radial-gradient(ellipse at 100% 0,#19314d 0,transparent 65%),linear-gradient(110deg,#0b1f3b,#04132b);border-bottom:1px solid var(--gold-line);color:var(--ivory)}
+.page-head h1{font-size:clamp(35px,4vw,55px);letter-spacing:-.8px}
+.page-head p{color:#d7dee7;font-size:17px}
+.intro-facts{background:#eee5d1}
+.intro-facts div{border-color:#cbb58e}
+.intro-facts strong{font-family:Cinzel,Georgia,serif;font-size:28px;font-weight:500}
+.intro-facts span{font-size:13px}
+.station{background:#fffdf8;border:1px solid #d4c3a3;border-bottom:2px solid var(--gold-line)}
+.station-content h3{font-size:28px}
+.timeline{border-color:#cbb58e}
+.timeline strong{color:var(--gold-ink)}
+.side-nav a{border-color:var(--line);font-size:14px}
+.editorial h2{font-size:33px}
+.editorial h3{font-size:23px}
+.editorial p,.editorial li{color:#4d5c70;font-size:16px}
+.copy-block{background:#f0e8d7;border:1px solid #cbb58e;box-shadow:inset 3px 0 0 #bd8d4c80}
+.copy-block .tag{color:var(--gold-ink)}
+.benefit{border-color:#cbb58e}
+.callout{background:#eee5d1;border-left-color:var(--gold-line);font-size:15px}
+.callout.dark{background:var(--navy);color:var(--ivory)}
+.chip{border-color:#cbbba0;font-size:13px;background:#fffdf740}
+.chip[aria-pressed=true]{background:var(--navy);border-color:var(--gold-line);color:var(--ivory)}
+.chip:is(:hover,:focus-visible){background:#eadbbd;border-color:var(--gold-line)}
+.chip[aria-pressed=true]:is(:hover,:focus-visible){background:#193657;color:var(--ivory)}
+.search input,.toolbar select,.guide-select select{background:#fffdf8;border-color:#c3b18f;color:var(--ink);border-radius:0}
+.search:before{color:var(--gold-ink)}
+.toolbar select{font-size:14px}
+.faq{border-color:var(--line)}
+.faq summary{font-weight:500;font-size:18px}
+.faq summary:after{color:var(--gold-ink)}
+.faq p{font-size:15px;color:#4d5c70}
+.faq summary:is(:hover,:focus-visible),.side-nav a:is(:hover,:focus-visible){background:#e3bf761a;color:var(--navy)}
+.proposal-card h3{font-size:29px}
+.proposal-card p{font-size:15px}
+.price-table th{color:var(--ivory)}
+.price-table tbody tr:last-child{background:#eadbbd}
+.check-item{border-color:var(--line);background:#fffdf8;font-size:14px}
+.check-progress span{background:var(--gold-line)}
+.guide-banner{background:linear-gradient(135deg,#f4ecda,#e9ddc3);border:1px solid #bd8d4c99;outline:1px solid #d6c09a;outline-offset:-8px;box-shadow:0 14px 34px #04132b0a}
+.guide-banner>img{border:1px solid #bd8d4c66;box-shadow:0 12px 26px #04132b26}
+.guide-banner h3{font-size:29px;line-height:1.25}
+.guide-banner p{font-size:15px}
+.hero-controls{background:#0b1f3bed;border-color:#e3bf7688;color:var(--ivory);box-shadow:0 6px 18px #04132b26}
+.hero-controls #hero-toggle{border-color:#e3bf7655}
+.hero-controls button:is(:hover,:focus-visible){background:#ebd18f;color:var(--deep)}
+footer{background:linear-gradient(125deg,#0b1f3b,#04132b 80%);border-top:1px solid #bd8d4c99;color:var(--ivory)}
+footer p{color:#c7d0db;font-size:14px}
+footer a,footer button{font-size:13px}
+.footer-end{border-color:#e3bf7633;color:#bac6d5}
+.empty{background:#eee5d1}
+dialog{border:1px solid #bd8d4c99;border-radius:0;box-shadow:0 24px 80px #04132b40}
+dialog::backdrop{background:#04132be6}
+.dialog-top{border-bottom-color:#cbb58e}
+.dialog-top h2{font-size:22px}
+.icon-button{border-color:#bda879}
+.guide-stage{background:#e9e1d1;border-color:#c3ac83}
+@media(max-width:1100px) and (min-width:761px){
+ .header nav a{font-size:13px;padding-inline:8px}
+ .quickbar p{font-size:16px}
+ .hero h1{font-size:54px;max-width:610px}
+}
+@media(max-width:760px){
+ .header nav{background:var(--navy);border-top-color:#ebd18f45}
+ .header nav a{font-size:15px}
+ .hero:after{background:linear-gradient(0deg,#0b1f3b 2%,#0b1f3bf0 40%,#0b1f3b91 76%,#0b1f3b40)}
+ .hero h1{font-size:clamp(35px,7.8vw,48px);max-width:560px;letter-spacing:-.6px}
+ .hero p{font-size:15px}
+ .hero-note{font-size:11px}
+ .hero .eyebrow{font-size:9px;letter-spacing:1.8px}
+ .hero .eyebrow:before{width:18px;margin-right:8px}
+ .section-head h2,.split h2{font-size:31px}
+ .section-head p{font-size:14px}
+ .quickbar p{font-size:17px}
+ .quickbar a{font-size:12px}
+ .journey h3{font-size:20px}
+ .journey .number{width:32px;height:40px;margin-bottom:17px}
+ .material-body{padding:17px}
+ .material h3{font-size:18px}
+ .material .meta{font-size:11px}
+ .page-head h1{font-size:35px}
+ .page-head p{font-size:15px}
+ .intro-facts strong{font-size:23px}
+ .intro-facts span{font-size:12px}
+ .editorial h2{font-size:28px}
+ .side-nav a{font-size:12px}
+ .faq summary{font-size:16px}
+ .toolbar select,.chip{font-size:12px}
+ .guide-banner{padding:25px;outline-offset:-6px}
+ .guide-banner h3{font-size:25px}
+ .video-feature h3{font-size:28px}
+ .dialog-top h2{font-size:18px}
+ .gallery .material h3{font-size:18px}
+}
