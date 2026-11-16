@@ -98,6 +98,15 @@ h3{font-size:24px}
 .hero h1{font-size:clamp(42px,4.6vw,64px);max-width:700px;line-height:1.15;letter-spacing:-1px;font-weight:600;color:var(--ivory)}
 .hero h1 em{font-style:normal;font-weight:500;color:#ebd18f}
 .hero p{color:#e1e4e9;font-size:17px;line-height:1.75}
+/* Keep the subtitle 24px inside the blue panel. Half the centered content
+   width minus the photo's extension past the midpoint gives its usable width.
+   The existing full-background composition takes over at 760px. */
+@media(min-width:761px){
+ .hero-content>p{max-width:min(470px,calc(50% - 12vw - 24px))}
+}
+@media(min-width:1500px){
+ .hero-content>p{max-width:min(470px,calc(50% - 11vw - 24px))}
+}
 .hero .eyebrow:before{content:'';display:inline-block;width:30px;height:1px;margin:0 12px 3px 0;background:var(--gold)}
 .hero-note{color:#d1d8e2;font-size:12px}
 .hero-caption{color:var(--ivory)}
