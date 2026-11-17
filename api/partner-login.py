@@ -25,16 +25,17 @@ required maxlength="254" value="{escaped_email}">"""
 <button class="button gold" name="action" value="send">Enviar código</button>"""
         secondary = f'<a class="text-link" href="{PATH}?step=code">Já tenho um código</a>'
         if email or code_step:
-            heading = "Confirme seu e-mail"
-            description = "Use o código de seis dígitos que você recebeu por e-mail."
+            heading = "Digite seu código"
+            description = "Use os seis dígitos enviados ao seu e-mail."
             identity_field = f'<input type="hidden" name="email" value="{escaped_email}">' if email else email_field
             form = f"""{identity_field}
 <label for="partner-code">Código de acesso</label>
 <input id="partner-code" class="partner-code" name="code" inputmode="numeric"
 autocomplete="one-time-code" pattern="[0-9]{{6}}" maxlength="6" required>
 <button class="button gold" name="action" value="verify">Entrar</button>
-<button class="text-link partner-link" name="action" value="send" formnovalidate>Reenviar código</button>"""
-            secondary = f'<a class="text-link" href="{PATH}">Usar outro e-mail</a>'
+<div class="partner-actions"><button class="text-link partner-link" name="action" value="send" formnovalidate>Reenviar código</button>
+<a class="text-link" href="{PATH}">Usar outro e-mail</a></div>"""
+            secondary = ""
         if signed_in:
             heading = "Acesso confirmado"
             description = ""
@@ -55,7 +56,7 @@ autocomplete="one-time-code" pattern="[0-9]{{6}}" maxlength="6" required>
 <link rel="manifest" href="/manifest.webmanifest">
 <link rel="icon" href="/assets/icon-192.png">
 <link rel="stylesheet" href="/styles.css">
-<link rel="stylesheet" href="/partner-login.css">
+<link rel="stylesheet" href="/partner-login.css?v=2">
 </head>
 <body class="partner-page">
 <header class="partner-header">
@@ -124,7 +125,7 @@ autocomplete="one-time-code" pattern="[0-9]{{6}}" maxlength="6" required>
                 token = verify_code(email, code)
                 if token:
                     return self.page("Código validado. Sessão iniciada.", cookie=self.session_cookie(token, SESSION_TTL), signed_in=True)
-                return self.page("Código inválido ou expirado. Confira o código ou solicite outro.", email, 401)
+                return self.page("Código inválido ou expirado. Confira ou peça outro.", email, 401)
             if action == "session":
                 if session_email(token):
                     return self.page("Sua sessão está ativa.", signed_in=True)
