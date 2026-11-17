@@ -89,6 +89,13 @@
   border: 0;
   background: transparent;
 }
+.partner-page .partner-card .partner-email-link {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  white-space: normal;
+}
+.partner-email-link span { flex: none; color: var(--gold); }
 
 .partner-page .partner-footer {
   display: block;

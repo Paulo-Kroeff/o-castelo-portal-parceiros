@@ -53,7 +53,7 @@ autocomplete="one-time-code" pattern="[0-9]{{6}}" maxlength="6" required>
 <button class="text-link partner-link" name="action" value="logout">Sair</button>"""
         contact = "" if signed_in else """<p class="partner-description partner-contact">
 Entre em contato com a equipe de parceria para saber como tornar sua agência parceira de O Castelo.
-<a class="text-link" href="mailto:parceria@ocastelomedieval.com.br?subject=Solicita%C3%A7%C3%A3o%20de%20acesso%20ao%20Portal%20do%20Parceiro">parceria@ocastelomedieval.com.br</a></p>"""
+<a class="text-link partner-email-link" href="mailto:parceria@ocastelomedieval.com.br?subject=Solicita%C3%A7%C3%A3o%20de%20acesso%20ao%20Portal%20do%20Parceiro"><span aria-hidden="true">✉</span> parceria@ocastelomedieval.com.br</a></p>"""
         status_message = (
             f'<p class="partner-status" role="{("alert" if status >= 400 else "status")}">'
             f'{html.escape(message)}</p>' if message else ""
