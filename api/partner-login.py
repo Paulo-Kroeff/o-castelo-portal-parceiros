@@ -5,7 +5,7 @@ import logging
 import os
 from http.cookies import CookieError, SimpleCookie
 from http.server import BaseHTTPRequestHandler
-from urllib.parse import parse_qs
+from urllib.parse import parse_qs, urlsplit
 
 from server.partner_access import SESSION_TTL, request_code, session_email, sign_out, verify_code
 
@@ -14,38 +14,74 @@ COOKIE = "__Host-castelo-partner"
 
 
 class handler(BaseHTTPRequestHandler):
-    def page(self, message="", email="", status=200, cookie=None, signed_in=False):
-        fields = ""
-        if not signed_in:
-            escaped_email = html.escape(email, quote=True)
-            fields = f"""
-<form method="post" action="{PATH}">
-<label>E-mail <input name="email" type="email" autocomplete="email"
-required maxlength="254" value="{escaped_email}"></label>
-<button name="action" value="send">Enviar código</button>
-</form>
-<form method="post" action="{PATH}">
-<label>E-mail <input name="email" type="email" autocomplete="email"
-required maxlength="254" value="{escaped_email}"></label>
-<label>Código <input name="code" inputmode="numeric" autocomplete="one-time-code"
-pattern="[0-9]{{6}}" maxlength="6" required></label>
-<button name="action" value="verify">Entrar</button>
-</form>"""
-        fields += f"""
-<form method="post" action="{PATH}">
-<button name="action" value="{'logout' if signed_in else 'session'}">
-{'Sair' if signed_in else 'Verificar sessão'}</button>
-</form>"""
-        body = f"""<!doctype html><html lang="pt-BR"><meta charset="utf-8">
+    def page(self, message="", email="", status=200, cookie=None, signed_in=False, code_step=False):
+        escaped_email = html.escape(email, quote=True)
+        email_field = f"""<label for="partner-email">E-mail da agência</label>
+<input id="partner-email" name="email" type="email" autocomplete="email"
+required maxlength="254" value="{escaped_email}">"""
+        heading = "Acesse o portal"
+        description = "Informe seu e-mail para receber um código de acesso."
+        form = f"""{email_field}
+<button class="button gold" name="action" value="send">Enviar código</button>"""
+        secondary = f'<a class="text-link" href="{PATH}?step=code">Já tenho um código</a>'
+        if email or code_step:
+            heading = "Confirme seu e-mail"
+            description = "Use o código de seis dígitos que você recebeu por e-mail."
+            identity_field = f'<input type="hidden" name="email" value="{escaped_email}">' if email else email_field
+            form = f"""{identity_field}
+<label for="partner-code">Código de acesso</label>
+<input id="partner-code" class="partner-code" name="code" inputmode="numeric"
+autocomplete="one-time-code" pattern="[0-9]{{6}}" maxlength="6" required>
+<button class="button gold" name="action" value="verify">Entrar</button>
+<button class="text-link partner-link" name="action" value="send" formnovalidate>Reenviar código</button>"""
+            secondary = f'<a class="text-link" href="{PATH}">Usar outro e-mail</a>'
+        if signed_in:
+            heading = "Acesso confirmado"
+            description = ""
+            secondary = ""
+            form = f"""<a class="button gold" href="/#inicio">Ir ao portal</a>
+<button class="text-link partner-link" name="action" value="logout">Sair</button>"""
+        status_message = (
+            f'<p class="partner-status" role="{("alert" if status >= 400 else "status")}">'
+            f'{html.escape(message)}</p>' if message else ""
+        )
+        body = f"""<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Acesso ao Portal do Parceiro</title>
-<main><h1>Acesso ao Portal do Parceiro</h1>
-<p>{html.escape(message)}</p>{fields}<p><a href="/">Voltar ao portal</a></p>
-</main></html>""".encode()
+<meta name="theme-color" content="#102735">
+<title>Acesso ao Portal do Parceiro · O Castelo</title>
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="icon" href="/assets/icon-192.png">
+<link rel="stylesheet" href="/styles.css">
+<link rel="stylesheet" href="/partner-login.css">
+</head>
+<body class="partner-page">
+<header class="partner-header">
+<a class="brand" href="/#inicio" aria-label="O Castelo, início">
+<img src="/assets/12Fw7rfB6u47WnVpw5K6mamMKQyNY7wfW.svg" alt="O Castelo">
+<span>PORTAL DO PARCEIRO</span>
+</a>
+<a class="crumb" href="/#inicio"><span aria-hidden="true">←</span> Voltar ao portal</a>
+</header>
+<main class="partner-layout">
+<div class="partner-photo" aria-hidden="true"></div>
+<section class="partner-card" aria-labelledby="partner-heading">
+<h1 id="partner-heading">{heading}</h1>
+{f'<p class="partner-description">{html.escape(description)}</p>' if description else ""}
+{status_message}
+<form class="partner-form" method="post" action="{PATH}">{form}</form>
+{secondary}
+</section>
+</main>
+<footer class="partner-footer">O Castelo · São Roque, SP</footer>
+</body>
+</html>""".encode()
         self.send_response(status)
         self.send_header("Content-Type", "text/html; charset=utf-8")
         self.send_header("Cache-Control", "private, no-store")
-        self.send_header("Content-Security-Policy", "default-src 'none'; form-action 'self'; frame-ancestors 'none'; base-uri 'none'")
+        self.send_header("Content-Security-Policy", "default-src 'none'; style-src 'self'; img-src 'self'; manifest-src 'self'; form-action 'self'; frame-ancestors 'none'; base-uri 'none'")
         self.send_header("Referrer-Policy", "same-origin")
         self.send_header("X-Content-Type-Options", "nosniff")
         if cookie is not None:
@@ -55,7 +91,7 @@ pattern="[0-9]{{6}}" maxlength="6" required></label>
         self.wfile.write(body)
 
     def do_GET(self):
-        self.page()
+        self.page(code_step=urlsplit(self.path).query == "step=code")
 
     def do_POST(self):
         origin = os.environ.get("PARTNER_PORTAL_ORIGIN", "https://o-castelo-portal-parceiros.vercel.app")
@@ -83,7 +119,7 @@ pattern="[0-9]{{6}}" maxlength="6" required></label>
         try:
             if action == "send":
                 request_code(email)
-                return self.page("Se o e-mail tiver acesso, você receberá um código.", email)
+                return self.page("O código é válido por 10 minutos.", email)
             if action == "verify":
                 token = verify_code(email, code)
                 if token:
