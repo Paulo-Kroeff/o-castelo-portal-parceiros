@@ -34,7 +34,7 @@ required maxlength="254" value="{escaped_email}">"""
 <button class="button gold" name="action" value="send">Enviar código</button>"""
         secondary = f"""<a class="text-link" href="{PATH}?step=code">Já tenho um código</a>
 """
-        if email or code_step:
+        if code_step:
             heading = "Confirme seu e-mail"
             description = "Use o código de seis dígitos que você recebeu por e-mail."
             identity_field = f'<input type="hidden" name="email" value="{escaped_email}">' if email else email_field
@@ -51,8 +51,8 @@ autocomplete="one-time-code" pattern="[0-9]{{6}}" maxlength="6" required>
             secondary = ""
             form = f"""<a class="button gold" href="/#inicio">Ir ao portal</a>
 <button class="text-link partner-link" name="action" value="logout">Sair</button>"""
-        contact = "" if signed_in else """<p class="partner-description">
-Ainda não tem acesso? Entre em contato com a equipe de parceria para saber como tornar sua agência parceira de O Castelo.
+        contact = "" if signed_in else """<p class="partner-description partner-contact">
+Entre em contato com a equipe de parceria para saber como tornar sua agência parceira de O Castelo.
 <a class="text-link" href="mailto:parceria@ocastelomedieval.com.br?subject=Solicita%C3%A7%C3%A3o%20de%20acesso%20ao%20Portal%20do%20Parceiro">parceria@ocastelomedieval.com.br</a></p>"""
         status_message = (
             f'<p class="partner-status" role="{("alert" if status >= 400 else "status")}">'
@@ -148,13 +148,20 @@ Ainda não tem acesso? Entre em contato com a equipe de parceria para saber como
 
         try:
             if action == "send":
-                request_code(email)
-                return self.page("Se seu e-mail estiver cadastrado, o código chega por e-mail e vale por 10 minutos.", email)
+                outcome = request_code(email)
+                if outcome == "unregistered":
+                    return self.page("Seu e-mail não está cadastrado. Você ainda não tem acesso.",
+                                     email, status=403)
+                message = ("Enviamos um código para o seu e-mail. Ele vale por 10 minutos."
+                           if outcome == "sent" else
+                           "Já recebemos um pedido de código para este e-mail. Aguarde um minuto para pedir outro.")
+                return self.page(message, email, code_step=True)
             if action == "verify":
                 token = verify_code(email, code)
                 if token:
                     return self.session_response(303, token, "/#inicio")
-                return self.page("Código inválido ou expirado. Confira o código ou solicite outro.", email, 401)
+                return self.page("Código inválido ou expirado. Confira o código ou solicite outro.",
+                                 email, status=401, code_step=True)
             if action == "session":
                 if session_email(token, renew=True):
                     return self.session_response(204, token)

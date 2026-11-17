@@ -94,21 +94,22 @@ def storage_keys(email):
 
 
 def request_code(email):
-    """Send a code to an authorized address. Return no account status to callers."""
+    """Report whether a code was sent, recently requested, or the address is unregistered."""
     email = normalize(email)
     if not allowed(email):
-        return
+        return "unregistered"
     cooldown, code_key, attempts = storage_keys(email)
     code = f"{secrets.randbelow(1_000_000):06d}"
     code_digest = digest(f"code:{email}:{code}")
     if not redis("EVAL", ISSUE, 3, cooldown, code_key, attempts,
                  code_digest, code_digest, RESEND_DELAY, CODE_TTL):
-        return
+        return "recent"
     try:
         send_access_code(email, code)
     except Exception:
         redis("EVAL", CANCEL, 2, cooldown, code_key, code_digest)
         raise
+    return "sent"
 
 
 def session_key(token):
