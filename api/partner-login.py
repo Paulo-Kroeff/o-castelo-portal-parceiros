@@ -14,6 +14,15 @@ COOKIE = "__Host-castelo-partner"
 
 
 class handler(BaseHTTPRequestHandler):
+    def session_response(self, status, token=None, location=None):
+        self.send_response(status)
+        self.send_header("Cache-Control", "private, no-store")
+        if token:
+            self.send_header("Set-Cookie", self.session_cookie(token, SESSION_TTL))
+        if location:
+            self.send_header("Location", location)
+        self.end_headers()
+
     def page(self, message="", email="", status=200, cookie=None, signed_in=False, code_step=False):
         escaped_email = html.escape(email, quote=True)
         email_field = f"""<label for="partner-email">E-mail da agência</label>
@@ -25,17 +34,16 @@ required maxlength="254" value="{escaped_email}">"""
 <button class="button gold" name="action" value="send">Enviar código</button>"""
         secondary = f'<a class="text-link" href="{PATH}?step=code">Já tenho um código</a>'
         if email or code_step:
-            heading = "Digite seu código"
-            description = "Use os seis dígitos enviados ao seu e-mail."
+            heading = "Confirme seu e-mail"
+            description = "Use o código de seis dígitos que você recebeu por e-mail."
             identity_field = f'<input type="hidden" name="email" value="{escaped_email}">' if email else email_field
             form = f"""{identity_field}
 <label for="partner-code">Código de acesso</label>
 <input id="partner-code" class="partner-code" name="code" inputmode="numeric"
 autocomplete="one-time-code" pattern="[0-9]{{6}}" maxlength="6" required>
 <button class="button gold" name="action" value="verify">Entrar</button>
-<div class="partner-actions"><button class="text-link partner-link" name="action" value="send" formnovalidate>Reenviar código</button>
-<a class="text-link" href="{PATH}">Usar outro e-mail</a></div>"""
-            secondary = ""
+<button class="text-link partner-link" name="action" value="send" formnovalidate>Reenviar código</button>"""
+            secondary = f'<a class="text-link" href="{PATH}">Usar outro e-mail</a>'
         if signed_in:
             heading = "Acesso confirmado"
             description = ""
@@ -56,7 +64,7 @@ autocomplete="one-time-code" pattern="[0-9]{{6}}" maxlength="6" required>
 <link rel="manifest" href="/manifest.webmanifest">
 <link rel="icon" href="/assets/icon-192.png">
 <link rel="stylesheet" href="/styles.css">
-<link rel="stylesheet" href="/partner-login.css?v=2">
+<link rel="stylesheet" href="/partner-login.css">
 </head>
 <body class="partner-page">
 <header class="partner-header">
@@ -92,7 +100,26 @@ autocomplete="one-time-code" pattern="[0-9]{{6}}" maxlength="6" required>
         self.wfile.write(body)
 
     def do_GET(self):
-        self.page(code_step=urlsplit(self.path).query == "step=code")
+        query = urlsplit(self.path).query
+        if query != "step=code":
+            try:
+                token = self.read_session_cookie()
+                if session_email(token, renew=True):
+                    if query == "entry=invite":
+                        return self.session_response(303, token, "/#inicio")
+                    return self.page("Sua sessão está ativa.",
+                                     cookie=self.session_cookie(token, SESSION_TTL), signed_in=True)
+            except (ValueError, CookieError):
+                pass
+            except Exception as error:
+                logging.error("Partner session check failed: %s", type(error).__name__)
+                return self.page("O acesso está temporariamente indisponível. Tente novamente.", status=503)
+        self.page(code_step=query == "step=code")
+
+    def read_session_cookie(self):
+        cookies = SimpleCookie()
+        cookies.load(self.headers.get("Cookie", ""))
+        return cookies[COOKIE].value if COOKIE in cookies else ""
 
     def do_POST(self):
         origin = os.environ.get("PARTNER_PORTAL_ORIGIN", "https://o-castelo-portal-parceiros.vercel.app")
@@ -111,9 +138,7 @@ autocomplete="one-time-code" pattern="[0-9]{{6}}" maxlength="6" required>
             code = fields.get("code", [""])[0].strip()
             if len(email) > 254 or len(code) > 6:
                 raise ValueError
-            cookies = SimpleCookie()
-            cookies.load(self.headers.get("Cookie", ""))
-            token = cookies[COOKIE].value if COOKIE in cookies else ""
+            token = self.read_session_cookie()
         except (ValueError, CookieError):
             return self.page("Dados inválidos. Confira os campos e tente novamente.", status=400)
 
@@ -124,12 +149,12 @@ autocomplete="one-time-code" pattern="[0-9]{{6}}" maxlength="6" required>
             if action == "verify":
                 token = verify_code(email, code)
                 if token:
-                    return self.page("Código validado. Sessão iniciada.", cookie=self.session_cookie(token, SESSION_TTL), signed_in=True)
-                return self.page("Código inválido ou expirado. Confira ou peça outro.", email, 401)
+                    return self.session_response(303, token, "/#inicio")
+                return self.page("Código inválido ou expirado. Confira o código ou solicite outro.", email, 401)
             if action == "session":
-                if session_email(token):
-                    return self.page("Sua sessão está ativa.", signed_in=True)
-                return self.page("Entre com um código para iniciar uma sessão.", status=401)
+                if session_email(token, renew=True):
+                    return self.session_response(204, token)
+                return self.session_response(401)
             if action == "logout":
                 sign_out(token)
                 return self.page("Sessão encerrada.", cookie=self.session_cookie("", 0))

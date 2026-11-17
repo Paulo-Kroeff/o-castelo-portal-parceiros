@@ -192,3 +192,20 @@ $('#install').addEventListener('click',async()=>{if(installPrompt){await install
 function connection(){$('#connection').hidden=navigator.onLine}window.addEventListener('online',connection);window.addEventListener('offline',connection);connection();
 route();
 if('serviceWorker'in navigator)navigator.serviceWorker.register('./sw.js').catch(()=>{});
+
+window.addEventListener('pageshow', async () => {
+ const accessLink = document.querySelector('#nav a[href="/api/partner-login"]');
+ if (!accessLink || !navigator.onLine) return;
+
+ try {
+  const response = await fetch('/api/partner-login', {
+   method: 'POST',
+   body: new URLSearchParams({action: 'session'}),
+   cache: 'no-store'
+  });
+  if (response.status === 204) accessLink.textContent = 'Minha sessão';
+  if (response.status === 401) accessLink.textContent = 'Entrar';
+ } catch {
+  // The portal can still render its existing offline view.
+ }
+});

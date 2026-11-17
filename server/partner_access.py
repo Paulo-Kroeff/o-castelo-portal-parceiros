@@ -13,7 +13,7 @@ from .partner_mail import send_access_code
 CODE_TTL = 600
 RESEND_DELAY = 60
 MAX_ATTEMPTS = 5
-SESSION_TTL = 8 * 60 * 60
+SESSION_TTL = 30 * 24 * 60 * 60
 
 # The checks and writes run together, including when requests reach different
 # instances of the serverless function.
@@ -127,11 +127,16 @@ def verify_code(email, code):
     return token if verified else None
 
 
-def session_email(token):
+def session_email(token, *, renew=False):
     if not re.fullmatch(r"[A-Za-z0-9_-]{43}", token):
         return None
-    email = redis("GET", session_key(token))
-    return email if email and allowed(email) else None
+    key = session_key(token)
+    email = redis("GET", key)
+    if not email or not allowed(email):
+        return None
+    if renew and not redis("EXPIRE", key, SESSION_TTL):
+        return None
+    return email
 
 
 def sign_out(token):
