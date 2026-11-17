@@ -46,7 +46,7 @@ pattern="[0-9]{{6}}" maxlength="6" required></label>
         self.send_header("Content-Type", "text/html; charset=utf-8")
         self.send_header("Cache-Control", "private, no-store")
         self.send_header("Content-Security-Policy", "default-src 'none'; form-action 'self'; frame-ancestors 'none'; base-uri 'none'")
-        self.send_header("Referrer-Policy", "no-referrer")
+        self.send_header("Referrer-Policy", "same-origin")
         self.send_header("X-Content-Type-Options", "nosniff")
         if cookie is not None:
             self.send_header("Set-Cookie", cookie)
