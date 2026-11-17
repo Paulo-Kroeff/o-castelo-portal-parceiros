@@ -106,6 +106,7 @@ h3{font-size:24px}
 }
 @media(min-width:1500px){
  .hero-content>p{max-width:min(470px,calc(50% - 11vw - 24px))}
+ .hero-content>.hero-actions{max-width:calc(50% - 11vw - 16px)}
 }
 .hero .eyebrow:before{content:'';display:inline-block;width:30px;height:1px;margin:0 12px 3px 0;background:var(--gold)}
 .hero-note{color:#d1d8e2;font-size:12px}
