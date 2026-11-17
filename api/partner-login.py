@@ -29,10 +29,11 @@ class handler(BaseHTTPRequestHandler):
 <input id="partner-email" name="email" type="email" autocomplete="email"
 required maxlength="254" value="{escaped_email}">"""
         heading = "Acesse o portal"
-        description = "Informe seu e-mail para receber um código de acesso."
+        description = "Informe o e-mail cadastrado para receber seu código de acesso."
         form = f"""{email_field}
 <button class="button gold" name="action" value="send">Enviar código</button>"""
-        secondary = f'<a class="text-link" href="{PATH}?step=code">Já tenho um código</a>'
+        secondary = f"""<a class="text-link" href="{PATH}?step=code">Já tenho um código</a>
+<a class="text-link" href="mailto:parceria@ocastelomedieval.com.br?subject=Solicita%C3%A7%C3%A3o%20de%20acesso%20ao%20Portal%20do%20Parceiro">Solicitar cadastro</a>"""
         if email or code_step:
             heading = "Confirme seu e-mail"
             description = "Use o código de seis dígitos que você recebeu por e-mail."
@@ -145,7 +146,7 @@ autocomplete="one-time-code" pattern="[0-9]{{6}}" maxlength="6" required>
         try:
             if action == "send":
                 request_code(email)
-                return self.page("O código é válido por 10 minutos.", email)
+                return self.page("Se seu e-mail estiver cadastrado, o código chega por e-mail e vale por 10 minutos.", email)
             if action == "verify":
                 token = verify_code(email, code)
                 if token:

@@ -249,3 +249,53 @@ dialog::backdrop{background:#04132be6}
  .dialog-top h2{font-size:18px}
  .gallery .material h3{font-size:18px}
 }
+
+.material-media.logo.logo-on-light img,
+#viewer-content > img.brand-preview.logo-on-light {
+ background: #f8f4eb;
+}
+
+.material-media.full-photo-preview img {
+ object-fit: contain;
+ background: var(--deep);
+}
+
+.material-media.full-photo-preview:is(:hover, :active) img {
+ transform: none;
+}
+
+.checklist-preview {
+ width: min(100%, 660px);
+ margin: 0 auto;
+ padding: 22px 24px;
+ border: 1px solid var(--gold-line);
+ background: #fffdf8;
+ color: var(--navy);
+ text-align: left;
+}
+
+.checklist-preview strong {
+ font-family: Georgia, serif;
+ font-size: clamp(16px, 3vw, 24px);
+ line-height: 1.22;
+ display: block;
+}
+
+.checklist-preview ul {
+ display: grid;
+ gap: 5px;
+ padding-left: 1.25em;
+ margin: 10px 0 0;
+}
+
+.checklist-preview p { margin: 16px 0 0; font-size: .875rem; }
+
+.checklist-cover { padding: 10px; }
+.checklist-preview.compact {
+ max-width: 250px;
+ padding: 10px 13px;
+ font-size: 11px;
+ line-height: 1.2;
+}
+.checklist-preview.compact strong { font-size: 15px; }
+.checklist-preview.compact ul { gap: 2px; margin-top: 6px; }
