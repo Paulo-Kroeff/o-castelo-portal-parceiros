@@ -91,11 +91,17 @@
 }
 .partner-page .partner-card .partner-email-link {
   display: flex;
-  align-items: baseline;
-  gap: 8px;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
   white-space: normal;
 }
-.partner-email-link span { flex: none; color: var(--gold); }
+.partner-email-link span {
+  flex: none;
+  color: var(--gold);
+  font-size: 24px;
+  line-height: 1;
+}
 
 .partner-page .partner-footer {
   display: block;

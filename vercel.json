@@ -7,6 +7,10 @@
   "functions": {
     "api/partner-content.py": {
       "includeFiles": "dist/**"
+    },
+    "api/partner-media.js": {
+      "includeFiles": "dist/data.js",
+      "maxDuration": 300
     }
   },
   "routes": [

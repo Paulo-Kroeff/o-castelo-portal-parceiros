@@ -2,6 +2,7 @@
 
 import logging
 import mimetypes
+import os
 import re
 from http.cookies import CookieError, SimpleCookie
 from http.server import BaseHTTPRequestHandler
@@ -55,6 +56,14 @@ class handler(BaseHTTPRequestHandler):
         mime = mimetypes.guess_type(file.name)[0] or "application/octet-stream"
         if mime.startswith("text/"):
             mime += "; charset=utf-8"
+        if relative == "index.html" and os.environ.get("PARTNER_MEDIA_ENABLED") == "1":
+            body = file.read_bytes().replace(
+                b"</head>", b'<meta name="partner-media" content="enabled"></head>', 1
+            )
+            self.respond(200, mime=mime, length=len(body))
+            if include_body:
+                self.wfile.write(body)
+            return
         self.respond(200, mime=mime, length=file.stat().st_size)
         if include_body:
             with file.open("rb") as source:
