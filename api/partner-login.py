@@ -33,7 +33,7 @@ required maxlength="254" value="{escaped_email}">"""
         form = f"""{email_field}
 <button class="button gold" name="action" value="send">Enviar código</button>"""
         secondary = f"""<a class="text-link" href="{PATH}?step=code">Já tenho um código</a>
-<a class="text-link" href="mailto:parceria@ocastelomedieval.com.br?subject=Solicita%C3%A7%C3%A3o%20de%20acesso%20ao%20Portal%20do%20Parceiro">Solicitar cadastro</a>"""
+"""
         if email or code_step:
             heading = "Confirme seu e-mail"
             description = "Use o código de seis dígitos que você recebeu por e-mail."
@@ -51,6 +51,9 @@ autocomplete="one-time-code" pattern="[0-9]{{6}}" maxlength="6" required>
             secondary = ""
             form = f"""<a class="button gold" href="/#inicio">Ir ao portal</a>
 <button class="text-link partner-link" name="action" value="logout">Sair</button>"""
+        contact = "" if signed_in else """<p class="partner-description">
+Ainda não tem acesso? Entre em contato com a equipe de parceria para saber como tornar sua agência parceira de O Castelo.
+<a class="text-link" href="mailto:parceria@ocastelomedieval.com.br?subject=Solicita%C3%A7%C3%A3o%20de%20acesso%20ao%20Portal%20do%20Parceiro">parceria@ocastelomedieval.com.br</a></p>"""
         status_message = (
             f'<p class="partner-status" role="{("alert" if status >= 400 else "status")}">'
             f'{html.escape(message)}</p>' if message else ""
@@ -69,11 +72,10 @@ autocomplete="one-time-code" pattern="[0-9]{{6}}" maxlength="6" required>
 </head>
 <body class="partner-page">
 <header class="partner-header">
-<a class="brand" href="/#inicio" aria-label="O Castelo, início">
+<div class="brand">
 <img src="/assets/12Fw7rfB6u47WnVpw5K6mamMKQyNY7wfW.svg" alt="O Castelo">
 <span>PORTAL DO PARCEIRO</span>
-</a>
-<a class="crumb" href="/#inicio"><span aria-hidden="true">←</span> Voltar ao portal</a>
+</div>
 </header>
 <main class="partner-layout">
 <div class="partner-photo" aria-hidden="true"></div>
@@ -83,6 +85,7 @@ autocomplete="one-time-code" pattern="[0-9]{{6}}" maxlength="6" required>
 {status_message}
 <form class="partner-form" method="post" action="{PATH}">{form}</form>
 {secondary}
+{contact}
 </section>
 </main>
 <footer class="partner-footer">O Castelo · São Roque, SP</footer>

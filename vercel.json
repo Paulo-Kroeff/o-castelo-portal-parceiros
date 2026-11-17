@@ -1,7 +1,29 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": null,
-  "buildCommand": "",
+  "buildCommand": "mkdir -p portal-public/assets && cp dist/styles.css dist/partner-login.css dist/manifest.webmanifest dist/sw.js portal-public/ && cp dist/assets/icon-192.png dist/assets/icon-512.png dist/assets/12Fw7rfB6u47WnVpw5K6mamMKQyNY7wfW.svg dist/assets/1aiUPLwiyj7JUAOPa75_Ss3-GwQ7Ib0LN.webp portal-public/assets/",
   "installCommand": "",
-  "outputDirectory": "dist"
+  "outputDirectory": "portal-public",
+  "functions": {
+    "api/partner-content.py": {
+      "includeFiles": "dist/**"
+    }
+  },
+  "routes": [
+    {
+      "src": "^/(?:index\\.html)?$",
+      "dest": "/api/partner-content?file=index.html"
+    },
+    {
+      "src": "^/(app\\.js|data\\.js|guide\\.js)$",
+      "dest": "/api/partner-content?file=$1"
+    },
+    {
+      "handle": "filesystem"
+    },
+    {
+      "src": "^/(assets/[A-Za-z0-9_./-]+)$",
+      "dest": "/api/partner-content?file=$1"
+    }
+  ]
 }

@@ -213,7 +213,7 @@ document.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)r
 document.addEventListener('input',e=>{if(e.target.id==='material-search'){filters.query=e.target.value;filters.limit=24;renderMaterials()}if(e.target.id==='faq-search'){faqFilter.query=e.target.value;renderFaq()}});
 document.addEventListener('change',e=>{if(e.target.id==='category'){filters.category=e.target.value;filters.limit=24;renderMaterials()}if(e.target.dataset.check!==undefined){const n=Number(e.target.dataset.check);e.target.checked?checked.add(n):checked.delete(n);writeStore('castelo:checklist',[...checked]);updateCheck()}});
 window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();installPrompt=e});
-$('#install').addEventListener('click',async()=>{if(installPrompt){await installPrompt.prompt();installPrompt=null;return;}lastTrigger=$('#install');$('#viewer-title').textContent='O Castelo sempre à mão';$('#viewer-content').innerHTML='<p>No iPhone ou iPad, abra este portal no Safari, toque em Compartilhar e escolha “Adicionar à Tela de Início”.</p><p>No Android ou computador, procure “Instalar aplicativo” ou “Adicionar à tela inicial” no menu do navegador, quando disponível.</p><p class="viewer-note">A leitura consultada pode continuar offline. Vídeos, arquivos do Drive e modelos no Canva precisam de internet.</p>';$('#viewer').showModal()});
+$('#install').addEventListener('click',async()=>{if(installPrompt){await installPrompt.prompt();installPrompt=null;return;}lastTrigger=$('#install');$('#viewer-title').textContent='O Castelo sempre à mão';$('#viewer-content').innerHTML='<p>No iPhone ou iPad, abra este portal no Safari, toque em Compartilhar e escolha “Adicionar à Tela de Início”.</p><p>No Android ou computador, procure “Instalar aplicativo” ou “Adicionar à tela inicial” no menu do navegador, quando disponível.</p><p class="viewer-note">O acesso ao portal e aos seus materiais precisa de internet.</p>';$('#viewer').showModal()});
 function connection(){$('#connection').hidden=navigator.onLine}window.addEventListener('online',connection);window.addEventListener('offline',connection);connection();
 route();
 if('serviceWorker'in navigator)navigator.serviceWorker.register('./sw.js').catch(()=>{});
@@ -231,6 +231,6 @@ window.addEventListener('pageshow', async () => {
   if (response.status === 204) accessLink.textContent = 'Minha sessão';
   if (response.status === 401) accessLink.textContent = 'Entrar';
  } catch {
-  // The portal can still render its existing offline view.
+  // Leave the current label in place if the session check is unavailable.
  }
 });
